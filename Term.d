@@ -5,7 +5,7 @@ import std.c.linux.termios;
 
 extern(C) void cfmakeraw(termios *termios_p);
 
-struct Termdef {
+private struct Termdef {
     int rows;
     int cols;
     string clrscr;
@@ -32,7 +32,7 @@ struct Termdef {
     string exit;
 };
 
-Termdef xterm = {
+private Termdef xterm = {
      24
     ,80
     ,"\x1b[H\x1b[2J"
@@ -59,7 +59,7 @@ Termdef xterm = {
     ,"\x1b[m" // exit att mode
   };
 
-Termdef linux = {
+private Termdef linux = {
     25
     ,80
     ,"\x1b[H\x1b[2J"

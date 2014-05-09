@@ -7,7 +7,7 @@ void main(string[] args) {
     auto dsp = new Term;
     auto kb=new Kb;
 
-    kb.kbtest();
+    //kb.kbtest();
 
     if (0) {
         while (c!='q') {

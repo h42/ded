@@ -5,15 +5,18 @@ struct node {
     string s;
 };
 
-class list {
-public:
+class List {
 
 node zhead;
 int zlen;
 int zcur;
 node *zcurp;
 
+public:
+
 this() {zhead.fp=null; zcur=-1; zcurp=null; zlen=0;}
+
+int len() { return zlen;}
 
 string get(int x) {
     if (x>=zlen || x<0) throw new Exception("bad index for list.get");
@@ -28,6 +31,11 @@ string get(int x) {
     zcur = x;
     zcurp = n;
     return n.s;
+}
+
+void update(int x, string s) {
+    get(x);
+    zcurp.s = s;
 }
 
 void insert(int x, string s) {
@@ -71,32 +79,32 @@ void remove(int x) {
 void tlist() {
     int lcnt=25000;
     
-    void mklist(list l) {
+    void mklist(List l) {
         string s;
         foreach (i; 0..lcnt) {
             s=format("hey now - %d", i);
-            //s="hey now - %d";
             //writeln(s);
             l.insert(i, s);
         }
-        writefln("len=%d\n",l.zlen);
+        writefln("len=%d\n",l.len());
     }
 
-    list l = new list();
+    List l = new List();
     string s;
     mklist(l);
 
-    for (int i=l.zlen-7; i<l.zlen; i++) {
+    for (int i=l.len()-7; i<l.len(); i++) {
         s=l.get(i);
         writefln("%d. - %s",i,s);
     }
 
-    l.remove(l.zlen-3);
-    l.remove(l.zlen-5);
+    l.remove(l.len()-3);
+    l.remove(l.len()-5);
+    l.update(l.len()-1, "how now brown cow");
     writeln();
 
-    for (int i=l.zlen-7; i<l.zlen; i++) {
+    for (int i=l.len()-7; i<l.len(); i++) {
         s=l.get(i);
-        writefln("%d. - %s",i,s);
+        writefln("%d. %s",i,s);
     }
 }

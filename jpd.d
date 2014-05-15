@@ -7,6 +7,10 @@ void main(string[] args) {
     auto kb=new Kb;
     auto ll = new List;
 
+    ll.startlog();
+    ll.stoplog();
+    ListLog[] v;
+    v=ll.commit();
     tlist();
 
     //kb.kbtest();

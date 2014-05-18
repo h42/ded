@@ -101,16 +101,18 @@ class Term {
 
         string t = environment.get("TERM");
         zterm =  (t=="linux") ? linux : xterm;
-        writef("term=%s\n",t);
+        //writef("term=%s\n",t);
 
         attrs = [zterm.fg, zterm.fg0, zterm.fg1, zterm.fg2, zterm.fg3,
                           zterm.fg4, zterm.fg5, zterm.fg6, zterm.fg7];
 
         Norm=0, Black=1, Red=2, Green=3, Yello=4, Blue=5, Magenta=6,
                   Cyan=7, White=8, Under=9, Bold=10, Reverse=11, Blink=12;
+        tclrscr();
     }
 
     ~this() {
+        tclrscr();
         tattr(Norm);
         tcsetattr(0,TCSANOW,&termios1);
     }

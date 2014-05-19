@@ -12,12 +12,13 @@ public:
     Kb      kb;
     List    zl;
     int ztabsize=8;
+    bool ztabcomp=false;
 
 // UNDO VARS
     int     zused;
     string  zubuf;
     char[]  zbuf,zbuf2;
-    int     zbufl;
+    int     zbufl,zbufl2;
     int     zcur;
     int     zdel1,zdlen;
     int     zedit,zedit2;
@@ -33,29 +34,92 @@ this() {
     dsp = new Term();
 }
 
+//
+// GLINE / PLINE
+//
 void gline(int up) {
     int i;
     char c;
     string llbuf;
     if (up) zedit=zedit2=1;
-    if (zy==zcur) return; // ALL FUNCTIONS MUST SET ZY!=ZCUR IF ZBUF NOT VALID
+    if (zy==zcur) return;
     zcur=zy;
     llbuf=zl.get(zy);
-
     for (i=zbufl=0; i<llbuf.length; i++) {
         if ((c=llbuf[i])==0) break;
-        if (zbuf.length <= zbufl+8) {
-            zbufl += 32;
-            zbuf.length = zbufl;
-        }
+        if (zbuf.length <= zbufl+8) zbuf.length = zbufl+32;
         if (c == 9) {
             zbuf[zbufl++]=' ';
             while(zbufl%ztabsize) zbuf[zbufl++]=' ';
         }
         else zbuf[zbufl++]=c;
     }
-    if (zbuf.length != zbuf2.length) zbuf2.length = zbuf.length;
 }
+
+void gline2(int y) {
+    int i;
+    char c;
+    string llbuf;
+    llbuf=zl.get(y);
+    for (i=zbufl2=0; i<llbuf.length; i++) {
+        if ((c=llbuf[i])==0) break;
+        if (zbuf2.length <= zbufl2+8) zbuf2.length = zbufl2+32;
+        if (c == 9) {
+            zbuf2[zbufl2++]=' ';
+            while(zbufl2%ztabsize) zbuf2[zbufl2++]=' ';
+        }
+        else zbuf2[zbufl2++]=c;
+    }
+}
+
+int tabstop(int x) {
+    return x + ztabsize - x % ztabsize;
+}
+
+void pline() {
+    int i,j,k,state;
+    char c;
+    if (!zedit2) return;
+
+    j=zbufl;
+    zbufl=0;
+    for (i=j-1;i>=0;i--)
+	if (zbuf[i]!=' ') {
+	    zbufl=i+1;
+	    break;
+	}
+    zbuf[zbufl]=0;
+
+    if (ztabcomp) {
+        for (i=j=k=state=0; i<zbufl; i++) {
+            c=zbuf[i];
+            if (state==0) {
+                if (c==' ') {
+                    k++;
+                    if (k==ztabsize) {
+                        zbuf[j++]=9;
+                        k=0;
+                    }
+                }
+                else {
+                    state=1;
+                    if (k) {
+                        for (int k2=0; k2<k; k2++) zbuf[k2]=' ';
+                        j+=k;
+                    }
+                    zbuf[j++]=c;
+                }
+            }
+            else zbuf[j++]=c;
+        }
+        zbuf[j]=0;
+        zbufl=j;
+    }
+
+    zl.update(zcur,zbuf[0..zbufl].idup);
+    zedit2=0;
+}
+
 
 //
 // DISPLAY
@@ -78,7 +142,7 @@ void dispchar(int c, int y, int x) {
     putchar(c);
 }
 
-void displine(string sx, int y) {
+void displine(char[] sx, int y) {
     int hi=0;
     dsp.tgoto(y-ztop, 0);
     dsp.tclreol();
@@ -104,28 +168,26 @@ void displine(string sx, int y) {
     if (hi) dsp.tattr(dsp.White);
 }
 
-/*
-void ced::disppage(int top) {
+void disppage(int top) {
     int i;
     pline();
     ztop=top;
-    for (i=0; i<zmaxy-2 && i+top<ll.size(); i++) {
+    for (i=0; i<dsp.zterm.cols-2 && i+top<zl.zlen; i++) {
 	gline2(i+top);
 	zbuf2[zbufl2]=0;
-	displine(zbuf2, i+top, zbufl2);
+        displine(zbuf2[0..zbufl2], i+top);
     }
-    dsp.eos();
+    dsp.tclreos();
 }
-*/
 
 /*
-void ced::dispstat() {
+void dispstat() {
     char sx[80];
     if (1) {
-	dsp.cup(zmaxy,1);
-	dsp.eol();
+        dsp.tgoto(dsp.zterm.rows-1,0);
+        dsp.tclreol();
     }
-    if (zmsg[0]) {
+    if (zmsg!="") {
         int mlen=(zmaxx>50) ? 50 : zmaxx-1;
 	//dsp.cup(rows,1);
 	zmsg[mlen]=0;
@@ -144,7 +206,7 @@ void ced::dispstat() {
 //
 void main(string[] args) {
     foreach (i; 'a' .. 'z'+1) dispchar(i, 0, i-'a');
-    foreach (i; 2..11) displine(format("This is line %d",i), i);
+    foreach (i; 2..11) displine(cast(char[])format("This is line %d",i), i);
 
     kb.get();
 

@@ -1,5 +1,5 @@
 PROGS=jpd
-OBJS=Term.o Kb.o List.o File.o Ded0.o
+OBJS=Term.o Kb.o List.o File.o Base.o
 DFLAGS=-w
 
 all:$(PROGS)
@@ -8,10 +8,10 @@ all:$(PROGS)
 #        ghc $(CLG) -c -o $@ $<
 
 %.o : %.d
-	dmd -c -w $<
+	dmd -c -w -g $<
 
 % : %.d
-	dmd -w $<
+	dmd -w -g $<
 
 jpd:jpd.d $(OBJS)
 	dmd -w -g jpd.d $(OBJS)

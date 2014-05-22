@@ -1,11 +1,13 @@
 import std.c.linux.linux;
 import std.stdio, std.string, std.file;
-import List, Zvars;
+import List;
 
 int getFile(string fn, List l) {
     int rc = access(toStringz(fn), W_OK);
     if (rc<0) {
-        return -1;
+        rc = access(toStringz(fn), R_OK);
+        if (rc<0) return -1;
+        rc=1;
     }
     char[] buf;
     string s;
@@ -14,8 +16,9 @@ int getFile(string fn, List l) {
     while (fh.readln(buf)) {
         s=chomp(buf.idup);
         l.insert(i,s);
+        i++;
     }
-    return 0;
+    return rc;
 }
 
 /*

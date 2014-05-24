@@ -13,6 +13,7 @@ public:
     List    zl;
     int ztabsize=8;
     bool ztabcomp=false;
+    char[]  zmsg;
 
 // UNDO VARS
     int     zused;
@@ -32,7 +33,12 @@ this() {
     zl = new List;
     kb = new Kb;
     dsp = new Term();
+    zx=zy=ztop=zoff=0;
 }
+
+int zlines() { return cast(int)zl.length;}
+int zcols() {return dsp.zterm.cols;}
+int zrows() {return dsp.zterm.rows;}
 
 //
 // GLINE / PLINE
@@ -79,6 +85,13 @@ int tabstop(int x) {
 void pline() {
     int i,j,k,state;
     char c;
+
+/*
+    dsp.tclrscr();
+    writef("zedit2=%d\n",zedit2);
+    kb.get();
+*/
+
     if (!zedit2) return;
 
     j=zbufl;
@@ -182,26 +195,16 @@ void disppage(int top) {
     dsp.tclreos();
 }
 
-/*
 void dispstat() {
-    char sx[80];
-    if (1) {
-        dsp.tgoto(dsp.zterm.rows-1,0);
-        dsp.tclreol();
-    }
+    dsp.tclreol();
     if (zmsg!="") {
-        int mlen=(zmaxx>50) ? 50 : zmaxx-1;
-	//dsp.cup(rows,1);
-	zmsg[mlen]=0;
-        dsp.fg6();
-	dsp.puts(zmsg,0,zmaxy,1);
-        dsp.fg7();
+        dsp.tattr(dsp.Cyan);
+        dsp.tputs(zmsg.idup, zrows-1, cast(int)(zcols-zmsg.length-1));
     }
-    sprintf(sx,"%4d,%d %d  ",zy+1,zx+1,ztabcomp);
-    sx[12]=0;
-    dsp.puts(sx,0,zmaxy,zmaxx-12);
+    string sx=format("%4d,%d",zy+1,zx+1);
+    dsp.tputs(sx, zrows-1, cast(int)(zcols-sx.length-1));
+    dsp.tattr(dsp.White);
 }
-*/
 
 
 }; // END DED

@@ -1,7 +1,7 @@
 import std.stdio;
-import  Base, File, Kb;
+import  File, Kb, Func1;
 
-class Ded : Base {
+class Ded : Func1 {
 
 //
 // DED.MAIN
@@ -37,7 +37,9 @@ void main(string[] args) {
         }
         else if (c>=Fkey.F1 && c<=Fkey.ERROR) { //FUNCTION KEYS
             if (c==Fkey.F12) break;
+            else if (c==Fkey.PGDOWN) pgdown();
         }
+        dispstat();
     }
 }
 

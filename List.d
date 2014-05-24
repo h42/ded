@@ -21,6 +21,10 @@ public:
 
 this() {zman=new string[0]; zlog=new ListLog[0]; zlogging=false;}
 
+auto length() {
+    return zman.length;
+}
+
 void startlog() { zlogging=true; }
 void stoplog() { zlogging=false; }
 

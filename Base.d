@@ -96,13 +96,12 @@ void pline() {
 
     j=zbufl;
     zbufl=0;
-    for (i=j-1;i>=0;i--)
+    for (i=j-1;i>=0;i--) {
 	if (zbuf[i]!=' ') {
 	    zbufl=i+1;
 	    break;
 	}
-    zbuf[zbufl]=0;
-
+    }
     if (ztabcomp) {
         for (i=j=k=state=0; i<zbufl; i++) {
             c=zbuf[i];
@@ -125,7 +124,6 @@ void pline() {
             }
             else zbuf[j++]=c;
         }
-        zbuf[j]=0;
         zbufl=j;
     }
 
@@ -185,13 +183,11 @@ void disppage(int top) {
     int i;
     pline();
     ztop=top;
-    for (i=0; i<dsp.zterm.cols-2 && i+top<zl.len(); i++) {
+    for (i=0; i<zrows-2 && i+top<zl.len(); i++) {
 	gline2(i+top);
 	zbuf2[zbufl2]=0;
         displine(zbuf2[0..zbufl2], i+top);
-        //writeln(i);
     }
-    //kb.get();
     dsp.tclreos();
 }
 

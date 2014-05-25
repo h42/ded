@@ -34,6 +34,8 @@ this() {
     kb = new Kb;
     dsp = new Term();
     zx=zy=ztop=zoff=0;
+    zins=1;
+    zcur=-1;
 }
 
 int zlines() { return cast(int)zl.length;}

@@ -15,22 +15,17 @@ void main(string[] args) {
         return;
     }
 
-/*
-    for (auto i=0; i<zl.len(); i++) {
-        string s = zl.get(i);
-        writef("%d %s\n",i,s);
-    }
-
-    kb.get();
-*/
-
     disppage(0);
+    dispstat();
+    dsp.tgoto(zy-ztop, zx-zoff);
 
     while (true) {
         c=kb.get();
         if (c==0) continue;
         else if (c<' ') {    //CONTROL CHARS
-            if (c==17) break;
+            if (c==17) break; //ctrl q
+            else if (c==2) bottom();
+            else if (c==20) top();
         }
         else if (c<128) {    //REGULAR CHARS
             writeln(c);
@@ -38,8 +33,10 @@ void main(string[] args) {
         else if (c>=Fkey.F1 && c<=Fkey.ERROR) { //FUNCTION KEYS
             if (c==Fkey.F12) break;
             else if (c==Fkey.PGDOWN) pgdown();
+            else if (c==Fkey.PGUP) pgup();
         }
         dispstat();
+        dsp.tgoto(zy-ztop, zx-zoff);
     }
 }
 

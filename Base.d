@@ -43,7 +43,7 @@ int zrows() {return dsp.zterm.rows;}
 //
 // GLINE / PLINE
 //
-void gline(int up) {
+void gline(int up=0) {
     int i;
     char c;
     string llbuf;
@@ -85,12 +85,6 @@ int tabstop(int x) {
 void pline() {
     int i,j,k,state;
     char c;
-
-/*
-    dsp.tclrscr();
-    writef("zedit2=%d\n",zedit2);
-    kb.get();
-*/
 
     if (!zedit2) return;
 
@@ -183,7 +177,7 @@ void disppage(int top) {
     int i;
     pline();
     ztop=top;
-    for (i=0; i<zrows-2 && i+top<zl.len(); i++) {
+    for (i=0; i<zrows-1 && i+top<zlines; i++) {
 	gline2(i+top);
 	zbuf2[zbufl2]=0;
         displine(zbuf2[0..zbufl2], i+top);
@@ -192,6 +186,7 @@ void disppage(int top) {
 }
 
 void dispstat() {
+    dsp.tgoto(zrows-1,0);
     dsp.tclreol();
     if (zmsg!="") {
         dsp.tattr(dsp.Cyan);
